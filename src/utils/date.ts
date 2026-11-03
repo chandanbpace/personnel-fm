@@ -42,13 +42,22 @@ export function financialMonth(today: string, startDay: number, offset = 0): Dat
   return { from: start.format(ISO_DATE), to: start.add(1, 'month').subtract(1, 'day').format(ISO_DATE) };
 }
 
-export const PERIODS = ['this-month', 'last-month', 'last-3-months', 'this-year', 'all', 'custom'] as const;
+export const PERIODS = [
+  'this-month',
+  'last-month',
+  'last-3-months',
+  'last-6-months',
+  'this-year',
+  'all',
+  'custom',
+] as const;
 export type Period = (typeof PERIODS)[number];
 
 export const PERIOD_LABELS: Record<Period, string> = {
   'this-month': 'This month',
   'last-month': 'Last month',
   'last-3-months': 'Last 3 months',
+  'last-6-months': 'Last 6 months',
   'this-year': 'This year',
   all: 'All time',
   custom: 'Custom range',
@@ -63,6 +72,8 @@ export function periodRange(period: Period, today: string, startDay: number): Da
       return financialMonth(today, startDay, -1);
     case 'last-3-months':
       return { from: financialMonth(today, startDay, -2).from, to: financialMonth(today, startDay).to };
+    case 'last-6-months':
+      return { from: financialMonth(today, startDay, -5).from, to: financialMonth(today, startDay).to };
     case 'this-year': {
       const year = dayjs(today, ISO_DATE).year();
       return { from: `${year}-01-01`, to: `${year}-12-31` };

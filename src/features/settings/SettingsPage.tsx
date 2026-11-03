@@ -3,6 +3,7 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
+import { ApiStatusCard } from '../../components/ApiStatusCard';
 import { useAuth } from '../../contexts/auth';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { ProfileForm } from './ProfileForm';
@@ -38,6 +39,7 @@ export function SettingsPage() {
       <Section title="Password" description="Changing your password signs you out on other devices.">
         <ChangePasswordForm />
       </Section>
+      <ApiStatusCard />
     </Stack>
   );
 }

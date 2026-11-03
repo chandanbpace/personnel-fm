@@ -42,6 +42,23 @@ export function formatMoney(paise: number, currency = 'INR'): string {
   return formatter.format(paise / 100);
 }
 
+const compactFormatters = new Map<string, Intl.NumberFormat>();
+
+/** Short form for axis ticks and tight spaces: ₹12K, ₹1.2L, ₹2.5Cr (Indian units for INR). Display only. */
+export function formatMoneyCompact(paise: number, currency = 'INR'): string {
+  let formatter = compactFormatters.get(currency);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(currency === 'INR' ? 'en-IN' : undefined, {
+      style: 'currency',
+      currency,
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    });
+    compactFormatters.set(currency, formatter);
+  }
+  return formatter.format(paise / 100);
+}
+
 /** The currency's symbol, e.g. "₹" for INR, for input adornments. */
 export function currencySymbol(currency = 'INR'): string {
   const locale = currency === 'INR' ? 'en-IN' : undefined;
