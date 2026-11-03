@@ -3,6 +3,8 @@ import { AppLayout } from '../components/AppLayout';
 import { NotFoundPage } from '../components/NotFoundPage';
 import { RouteErrorPage } from '../components/RouteErrorPage';
 import { ProtectedRoute, PublicOnlyRoute } from '../components/RouteGuards';
+import { AccountsPage } from '../features/accounts/AccountsPage';
+import { CategoriesPage } from '../features/categories/CategoriesPage';
 import { ForgotPasswordPage } from '../features/auth/ForgotPasswordPage';
 import { LoginPage } from '../features/auth/LoginPage';
 import { RegisterPage } from '../features/auth/RegisterPage';
@@ -31,6 +33,8 @@ export const routes: RouteObject[] = [
             element: <AppLayout />,
             children: [
               { index: true, element: <DashboardPage /> },
+              { path: 'accounts', element: <AccountsPage /> },
+              { path: 'categories', element: <CategoriesPage /> },
               { path: 'settings', element: <SettingsPage /> },
               { path: '*', element: <NotFoundPage /> },
             ],
