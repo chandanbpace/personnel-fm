@@ -1,11 +1,13 @@
 import AccountBalanceWalletOutlined from '@mui/icons-material/AccountBalanceWalletOutlined';
 import Logout from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
@@ -16,6 +18,9 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Link as RouterLink, Outlet, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/auth';
+import { SideNav } from './SideNav';
+
+const DRAWER_WIDTH = 240;
 
 function initials(name: string) {
   return name
@@ -92,10 +97,25 @@ function UserMenu() {
 }
 
 export function AppLayout() {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar position="sticky" color="default" elevation={0} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <AppBar
+        position="sticky"
+        color="default"
+        elevation={0}
+        sx={{ borderBottom: 1, borderColor: 'divider', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
+          <IconButton
+            edge="start"
+            aria-label="Open navigation"
+            onClick={() => setMobileNavOpen(true)}
+            sx={{ mr: 1, display: { md: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
           <Box
             component={RouterLink}
             to="/"
@@ -109,9 +129,36 @@ export function AppLayout() {
           <UserMenu />
         </Toolbar>
       </AppBar>
-      <Container component="main" maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, flex: 1 }}>
-        <Outlet />
-      </Container>
+
+      <Box sx={{ display: 'flex', flex: 1 }}>
+        {/* Permanent sidebar on desktop, slide-out drawer on mobile and tablet. */}
+        <Drawer
+          variant="temporary"
+          open={mobileNavOpen}
+          onClose={() => setMobileNavOpen(false)}
+          sx={{ display: { md: 'none' }, '& .MuiDrawer-paper': { width: DRAWER_WIDTH } }}
+        >
+          <Toolbar />
+          <SideNav onNavigate={() => setMobileNavOpen(false)} />
+        </Drawer>
+        <Box
+          component="aside"
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            width: DRAWER_WIDTH,
+            flexShrink: 0,
+            borderRight: 1,
+            borderColor: 'divider',
+            pt: 2,
+          }}
+        >
+          <SideNav />
+        </Box>
+
+        <Container component="main" maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, flex: 1, minWidth: 0 }}>
+          <Outlet />
+        </Container>
+      </Box>
     </Box>
   );
 }

@@ -3,16 +3,21 @@
  * conversion from user input is done on strings so no binary floating-point is involved.
  */
 
-const AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/;
+const AMOUNT_PATTERN = /^(-?)(\d+)(?:\.(\d{1,2}))?$/;
 
-/** Parses a user-entered rupee amount ("1,250.5") into integer paise. Returns null for invalid input. */
-export function rupeesToPaise(input: string): number | null {
-  const normalised = input.replace(/,/g, '').trim();
-  if (!AMOUNT_PATTERN.test(normalised)) return null;
+/**
+ * Parses a user-entered rupee amount ("1,250.5") into integer paise. Returns null for invalid input.
+ * Negative amounts ("-500") are only accepted with `allowNegative`.
+ */
+export function rupeesToPaise(input: string, { allowNegative = false } = {}): number | null {
+  const match = AMOUNT_PATTERN.exec(input.replaceAll(',', '').trim());
+  if (!match) return null;
 
-  const [whole = '0', fraction = ''] = normalised.split('.');
+  const [, sign, whole = '0', fraction = ''] = match;
+  if (sign && !allowNegative) return null;
   const paise = Number(whole) * 100 + Number(fraction.padEnd(2, '0'));
-  return Number.isSafeInteger(paise) ? paise : null;
+  if (!Number.isSafeInteger(paise)) return null;
+  return sign && paise !== 0 ? -paise : paise;
 }
 
 /** Formats paise for editing in an input, e.g. 125050 -> "1250.50". */
@@ -35,4 +40,18 @@ export function formatMoney(paise: number, currency = 'INR'): string {
   }
   // Display only: dividing an integer by 100 is exact enough for rendering two decimals.
   return formatter.format(paise / 100);
+}
+
+/** The currency's symbol, e.g. "₹" for INR, for input adornments. */
+export function currencySymbol(currency = 'INR'): string {
+  const locale = currency === 'INR' ? 'en-IN' : undefined;
+  const parts = new Intl.NumberFormat(locale, { style: 'currency', currency }).formatToParts(0);
+  return parts.find((part) => part.type === 'currency')?.value ?? currency;
+}
+
+/** Sums paise amounts exactly; throws rather than silently losing precision. */
+export function sumPaise(amounts: readonly number[]): number {
+  const total = amounts.reduce((sum, amount) => sum + amount, 0);
+  if (!Number.isSafeInteger(total)) throw new RangeError('Total exceeds safe integer range');
+  return total;
 }
