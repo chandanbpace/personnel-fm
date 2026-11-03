@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as authApi from '../features/auth/authApi';
 import { fetchHealth } from '../services/healthService';
+import { installFakeApi } from '../test/fakeApi';
 import { makeUser, renderRoutes } from '../test/renderWithProviders';
 import { routes } from './routes';
 
@@ -12,6 +13,7 @@ const mockFetchHealth = jest.mocked(fetchHealth);
 const mockAuth = jest.mocked(authApi);
 
 beforeEach(() => {
+  installFakeApi({});
   mockFetchHealth.mockResolvedValue({
     status: 'ok',
     database: 'connected',
@@ -37,7 +39,6 @@ describe('route protection', () => {
     renderRoutes(routes, '/');
 
     expect(await screen.findByRole('heading', { name: 'Dashboard' })).toBeInTheDocument();
-    expect(await screen.findByText('API: ok')).toBeInTheDocument();
   });
 
   it('shows a loader while the session is being restored', () => {

@@ -45,6 +45,14 @@ export function installFakeApi(routes: Record<string, Handler>) {
       'GET /auth/csrf': () => ok({ csrfToken: 'test-csrf' }),
       'GET /auth/me': () => ok({ user: makeUser() }),
       'GET /health': () => ok({ status: 'ok', database: 'connected', uptimeSeconds: 1, timestamp: '' }),
+      // An empty, signed-in user, so pages that load these lists render without per-test setup.
+      'GET /accounts': () => ok({ accounts: [] }),
+      'GET /categories': () => ok({ categories: [] }),
+      'GET /dashboard/summary': () => ok(EMPTY_SUMMARY),
+      'GET /dashboard/cash-flow': () => ok({ buckets: [] }),
+      'GET /dashboard/savings-trend': () => ok({ buckets: [] }),
+      'GET /dashboard/category-breakdown': () => ok({ totalPaise: 0, categories: [] }),
+      'GET /dashboard/recent-transactions': () => ok({ transactions: [] }),
     };
     const key = `${method} ${url}`;
     const handler =
@@ -61,6 +69,18 @@ export function installFakeApi(routes: Record<string, Handler>) {
 
   return { requests };
 }
+
+const EMPTY_SUMMARY = {
+  period: { from: '', to: '', currency: 'INR' },
+  availableCurrencies: [],
+  incomePaise: 0,
+  expensePaise: 0,
+  netPaise: 0,
+  savingsRatePercent: null,
+  totalBalancePaise: 0,
+  activeAccountCount: 0,
+  transactionCount: 0,
+};
 
 /** "PATCH /accounts/:id" matches "PATCH /accounts/abc". */
 function matches(pattern: string, key: string) {

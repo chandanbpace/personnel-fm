@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { routes } from '../../app/routes';
 import { ApiError } from '../../services/apiClient';
 import { fetchHealth } from '../../services/healthService';
+import { installFakeApi } from '../../test/fakeApi';
 import { makeUser, renderRoutes } from '../../test/renderWithProviders';
 import * as authApi from './authApi';
 
@@ -12,6 +13,7 @@ jest.mock('../../services/healthService');
 const mockAuth = jest.mocked(authApi);
 
 beforeEach(() => {
+  installFakeApi({});
   mockAuth.fetchCurrentUser.mockResolvedValue(null);
   jest.mocked(fetchHealth).mockReturnValue(new Promise(() => {}));
 });
