@@ -11,6 +11,7 @@ import { RegisterPage } from '../features/auth/RegisterPage';
 import { ResetPasswordPage } from '../features/auth/ResetPasswordPage';
 import { DashboardPage } from '../features/dashboard/DashboardPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
+import { TransactionsPage } from '../features/transactions/TransactionsPage';
 
 export const routes: RouteObject[] = [
   {
@@ -33,6 +34,7 @@ export const routes: RouteObject[] = [
             element: <AppLayout />,
             children: [
               { index: true, element: <DashboardPage /> },
+              { path: 'transactions', element: <TransactionsPage /> },
               { path: 'accounts', element: <AccountsPage /> },
               { path: 'categories', element: <CategoriesPage /> },
               { path: 'settings', element: <SettingsPage /> },

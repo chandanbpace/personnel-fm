@@ -17,6 +17,7 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmptyState } from '../../components/EmptyState';
 import { PageHeader } from '../../components/PageHeader';
@@ -60,11 +61,13 @@ function BalanceText({ account }: { account: Account }) {
 function AccountCard({
   account,
   onEdit,
+  onViewTransactions,
   onDeactivate,
   onReactivate,
 }: {
   account: Account;
   onEdit: () => void;
+  onViewTransactions: () => void;
   onDeactivate: () => void;
   onReactivate: () => void;
 }) {
@@ -94,6 +97,14 @@ function AccountCard({
             <MoreVert />
           </IconButton>
           <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={close}>
+            <MenuItem
+              onClick={() => {
+                close();
+                onViewTransactions();
+              }}
+            >
+              View transactions
+            </MenuItem>
             <MenuItem
               onClick={() => {
                 close();
@@ -138,6 +149,7 @@ function AccountCard({
 
 export function AccountsPage() {
   const notify = useNotify();
+  const navigate = useNavigate();
   const [showInactive, setShowInactive] = useState(false);
   const { data: accounts, error, isPending, refetch } = useAccounts(showInactive);
   const deactivate = useDeactivateAccount();
@@ -251,6 +263,7 @@ export function AccountsPage() {
                   setFormKey((k) => k + 1);
                   setFormOpen(true);
                 }}
+                onViewTransactions={() => navigate(`/transactions?accountId=${account.id}&period=all`)}
                 onDeactivate={() => setToDeactivate(account)}
                 onReactivate={() => reactivate(account)}
               />
@@ -263,7 +276,7 @@ export function AccountsPage() {
       <ConfirmDialog
         open={Boolean(toDeactivate)}
         title={`Deactivate ${toDeactivate?.name ?? 'account'}?`}
-        description="It will be hidden from your account list and can't be used for new transactions. Its history stays in your reports, and you can reactivate it at any time."
+        description="It will be hidden from your account list and can't be used for new transactions or transfers. Its history stays in your reports, and you can reactivate it at any time."
         confirmLabel="Deactivate"
         destructive
         loading={deactivate.isPending}
