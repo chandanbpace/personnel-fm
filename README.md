@@ -16,14 +16,14 @@ The API must be running and its `CORS_ORIGINS` must include `http://localhost:51
 
 ## Scripts
 
-| Script | Purpose |
-|---|---|
-| `npm run dev` | Start the Vite dev server |
-| `npm run build` / `npm run preview` | Type-check and build to `dist/`, then serve the build |
-| `npm test` | Run the Jest + React Testing Library suite |
-| `npm run test:coverage` | Run the tests with a coverage report |
-| `npm run lint` / `npm run typecheck` | Run ESLint / the TypeScript checks (app and tests) |
-| `npm run format` / `npm run format:check` | Format with Prettier / check formatting |
+| Script                                    | Purpose                                               |
+| ----------------------------------------- | ----------------------------------------------------- |
+| `npm run dev`                             | Start the Vite dev server                             |
+| `npm run build` / `npm run preview`       | Type-check and build to `dist/`, then serve the build |
+| `npm test`                                | Run the Jest + React Testing Library suite            |
+| `npm run test:coverage`                   | Run the tests with a coverage report                  |
+| `npm run lint` / `npm run typecheck`      | Run ESLint / the TypeScript checks (app and tests)    |
+| `npm run format` / `npm run format:check` | Format with Prettier / check formatting               |
 
 ## Structure
 
