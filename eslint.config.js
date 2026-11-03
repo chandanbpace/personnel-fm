@@ -23,7 +23,7 @@ export default tseslint.config(
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {
-    files: ['jest.config.cjs'],
+    files: ['jest.config.cjs', 'jest.environment.cjs'],
     languageOptions: { sourceType: 'commonjs', globals: globals.node },
   },
   prettier,
