@@ -12,7 +12,10 @@ export interface FakeRequest {
 type Reply = { status: number; body: unknown };
 type Handler = (req: FakeRequest) => Reply | Promise<Reply>;
 
-export const ok = (data: unknown, status = 200): Reply => ({ status, body: { success: true, data } });
+export const ok = (data: unknown, status = 200, meta?: unknown): Reply => ({
+  status,
+  body: { success: true, data, ...(meta ? { meta } : {}) },
+});
 export const fail = (status: number, code: string, message: string, details?: unknown): Reply => ({
   status,
   body: { success: false, error: { code, message, details } },
