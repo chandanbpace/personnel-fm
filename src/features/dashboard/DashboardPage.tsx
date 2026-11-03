@@ -10,10 +10,11 @@ import { EmptyState } from '../../components/EmptyState';
 import { PageHeader } from '../../components/PageHeader';
 import { QueryError } from '../../components/QueryError';
 import { useAuth } from '../../contexts/auth';
-import { formatCalendarDate, PERIOD_LABELS, type Period } from '../../utils/date';
+import { formatCalendarDate, PERIOD_LABELS, todayIn, type Period } from '../../utils/date';
 import { formatMoney } from '../../utils/money';
 import { useAccounts } from '../accounts/accountsApi';
 import { useCategories } from '../categories/categoriesApi';
+import { BudgetStatusCard } from './BudgetStatusCard';
 import { CashFlowChart } from './CashFlowChart';
 import { CategoryBreakdownCard } from './CategoryBreakdownCard';
 import {
@@ -36,6 +37,7 @@ export function DashboardPage() {
   const { range, trendRange, startDay } = state;
   const currency = state.currency ?? user?.currency ?? 'INR';
   const params = { ...range, currency };
+  const today = todayIn(user?.timezone);
 
   const summary = useDashboardSummary(params);
   const cashFlow = useCashFlow({ ...trendRange, currency });
@@ -199,6 +201,10 @@ export function DashboardPage() {
             loading={recent.isPending}
             viewAllHref={`/transactions?period=custom&from=${range.from}&to=${range.to}`}
           />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          {/* Budgets for the latest month in the period that has started. */}
+          <BudgetStatusCard date={range.to < today ? range.to : today} />
         </Grid>
       </Grid>
     </Stack>

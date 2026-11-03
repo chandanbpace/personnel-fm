@@ -43,6 +43,17 @@ const TOKENS = {
 
 export type ChartTokens = (typeof TOKENS)[keyof typeof TOKENS];
 
+/**
+ * Reserved status colours (the same in both modes). Never used for series identity, and always shown
+ * with an icon and a text label: warning and serious sit below 3:1 on the light surface by design.
+ */
+export const STATUS_COLORS = {
+  good: '#0ca30c',
+  warning: '#fab219',
+  serious: '#ec835a',
+  critical: '#d03b3b',
+} as const;
+
 export function useChartTokens(): ChartTokens {
   const { mode, systemMode } = useColorScheme();
   const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
