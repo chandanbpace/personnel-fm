@@ -1,4 +1,4 @@
-import { formatMoney, paiseToRupeeString, rupeesToPaise } from './money';
+import { currencySymbol, formatMoney, paiseToRupeeString, rupeesToPaise, sumPaise } from './money';
 
 describe('rupeesToPaise', () => {
   it.each([
@@ -28,5 +28,32 @@ describe('paiseToRupeeString', () => {
 describe('formatMoney', () => {
   it('uses Indian digit grouping for INR', () => {
     expect(formatMoney(12_505_000)).toBe('₹1,25,050.00');
+  });
+});
+
+describe('negative amounts', () => {
+  it('are rejected unless allowed', () => {
+    expect(rupeesToPaise('-500')).toBeNull();
+    expect(rupeesToPaise('-500', { allowNegative: true })).toBe(-50_000);
+    expect(rupeesToPaise('-0.05', { allowNegative: true })).toBe(-5);
+    expect(rupeesToPaise('-0', { allowNegative: true })).toBe(0);
+  });
+});
+
+describe('sumPaise', () => {
+  it('adds integer paise exactly where float rupees would drift', () => {
+    expect(0.1 + 0.2).not.toBe(0.3);
+    expect(sumPaise([10, 20])).toBe(30);
+    expect(sumPaise([])).toBe(0);
+  });
+
+  it('throws past the safe integer range', () => {
+    expect(() => sumPaise([Number.MAX_SAFE_INTEGER, 1])).toThrow(RangeError);
+  });
+});
+
+describe('currencySymbol', () => {
+  it('returns the symbol for INR', () => {
+    expect(currencySymbol('INR')).toBe('₹');
   });
 });

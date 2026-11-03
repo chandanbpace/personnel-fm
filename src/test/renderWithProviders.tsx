@@ -6,6 +6,7 @@ import type { ReactElement } from 'react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router';
 import { theme } from '../app/theme';
 import { AuthProvider } from '../contexts/AuthContext';
+import { NotificationsProvider } from '../contexts/NotificationsProvider';
 import type { User } from '../types/user';
 
 function createTestQueryClient() {
@@ -19,9 +20,11 @@ export function renderRoutes(routes: RouteObject[], initialPath = '/') {
     <QueryClientProvider client={createTestQueryClient()}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        <NotificationsProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </NotificationsProvider>
       </ThemeProvider>
     </QueryClientProvider>,
   );
